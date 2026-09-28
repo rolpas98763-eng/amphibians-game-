@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة أسئلة البرمائيات</title>
+<style>
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#dff7f0,#e8e0ff);margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;color:#25233a}
+.card{background:#fff;width:min(90%,600px);padding:28px;border-radius:24px;box-shadow:0 12px 35px #0002;text-align:center}
+h1{margin-top:0;color:#6846a5}.q{font-size:20px;font-weight:bold;line-height:1.6}
+.options{display:grid;gap:12px;margin-top:22px}.option{border:0;border-radius:14px;padding:14px;font-size:17px;cursor:pointer;background:#f0edf8}.option:hover{background:#ddd5f4}
+.correct{background:#b9efc8!important}.wrong{background:#ffc2c2!important}
+#next{display:none;margin-top:18px;border:0;border-radius:12px;padding:12px 28px;background:#6846a5;color:white;font-size:16px;cursor:pointer}
+#result{display:none;font-size:24px;font-weight:bold}
+.small{color:#777}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>🐸 لعبة أسئلة البرمائيات</h1>
+<div id="game">
+<p class="small" id="count"></p>
+<div class="q" id="question"></div>
+<div class="options" id="options"></div>
+<button id="next">السؤال التالي</button>
+</div>
+<div id="result"></div>
+</div>
+<script>
+const qs=[
+{q:"ماذا يساعد البرمائيات على التكيف سواءً بالبرودة أو الدفء؟",a:"قدرتها على الإحساس بالمكان المناسب",o:["قدرتها على الطيران","قدرتها على الإحساس بالمكان المناسب","قدرتها على تغيير لونها دائمًا","قدرتها على العيش دون ماء"]},
+{q:"يستقبل الأذين الأيمن ……",a:"دمًا غير مؤكسج من الجسم",o:["دمًا مؤكسجًا من الرئتين","دمًا غير مؤكسج من الجسم","هواءً من الرئتين","دمًا مؤكسجًا من الجسم"]},
+{q:"هل ينقسم البطين في البرمائيات؟",a:"خطأ",o:["صح","خطأ","أحيانًا فقط","لا يمكن تحديد ذلك"]}
+];
+let i=0,score=0,answered=false;
+const qEl=document.getElementById("question"), optEl=document.getElementById("options"), next=document.getElementById("next"), count=document.getElementById("count");
+function show(){
+answered=false; next.style.display="none"; count.textContent=`السؤال ${i+1} من ${qs.length}`;
+qEl.textContent=qs[i].q; optEl.innerHTML="";
+qs[i].o.forEach(x=>{let b=document.createElement("button");b.className="option";b.textContent=x;b.onclick=()=>answer(b,x);optEl.appendChild(b)});
+}
+function answer(btn,x){
+if(answered)return; answered=true;
+document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+if(x===qs[i].a){score++;btn.classList.add("correct")}else{btn.classList.add("wrong");[...document.querySelectorAll(".option")].find(b=>b.textContent===qs[i].a).classList.add("correct")}
+next.style.display="inline-block"; next.textContent=i===qs.length-1?"عرض النتيجة":"السؤال التالي";
+}
+next.onclick=()=>{i++;if(i<qs.length)show();else{document.getElementById("game").style.display="none";let r=document.getElementById("result");r.style.display="block";r.innerHTML=`🎉 انتهت اللعبة!<br><br>نتيجتك: ${score} / ${qs.length}`}};
+show();
+</script>
+</body>
+</html>
